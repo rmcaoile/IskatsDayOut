@@ -2,3 +2,14 @@
 .settings/
 bin/
 build.fxbuild
+.gradle/
+build/
+gradle-app.setting
+gradlew
+gradlew.bat
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+.DS_Store
+*.log

@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+application {
+    mainClass = 'main.MainClass'
+}
+
+javafx {
+    version = '21'
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task jpackage(type: Exec) {
+    dependsOn 'jar'
+    def outputDir = file("$buildDir/jpackage")
+    doFirst {
+        outputDir.mkdirs()
+    }
+    workingDir projectDir
+    commandLine 'jpackage',
+        '--input', "$buildDir/libs",
+        '--name', 'IskatsDayOut',
+        '--main-jar', "${project.name}.jar",
+        '--main-class', application.mainClass,
+        '--type', 'app-image',
+        '--dest', "$buildDir/jpackage",
+        '--app-version', '1.0',
+        '--vendor', 'Iskat'
+}
