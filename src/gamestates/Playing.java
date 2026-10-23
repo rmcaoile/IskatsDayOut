@@ -3,6 +3,7 @@ package gamestates;
 import entities.EnemyManager;
 import entities.Player;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
@@ -19,6 +20,10 @@ public class Playing extends State implements Statemethods {
 	private Player player;
 	private LevelManager levelManager;
 	private EnemyManager enemyManager;
+
+    // Background assets
+    private Image bgImage;
+    private Image middleImage;
 
 	// Game overlays
 	private GameOverOverlay gameOverOverlay;
@@ -44,6 +49,8 @@ public class Playing extends State implements Statemethods {
 		super(game);
 		initClasses();
 		//load bg here
+        bgImage = new Image("images/background/back.png", Game.GAME_WIDTH, Game.GAME_HEIGHT, false, false);
+        middleImage = new Image("images/background/middle.png");
 		calcLvlOffset();
 		loadStartLevel();
 	}
@@ -156,7 +163,21 @@ public class Playing extends State implements Statemethods {
 	// game over and level completed shown here
 	@Override
 	public void draw(GraphicsContext gc) {
-	    levelManager.draw(gc, xLvlOffset);
+        int bgScale = Game.GAME_HEIGHT / (int) bgImage.getHeight();
+        int bgWidth = (int) (bgImage.getWidth() * bgScale);
+        int bgHeight = Game.GAME_HEIGHT;
+        int bgParallaxOffset = (int) ((xLvlOffset * 0.2) % bgWidth);
+        for (int x = -bgParallaxOffset; x < Game.GAME_WIDTH; x += bgWidth) {
+            gc.drawImage(bgImage, x, 0, bgWidth, bgHeight);
+        }
+		int middleScale = 3;
+        int middleWidth = (int) (middleImage.getWidth() * middleScale);
+        int middleHeight = (int) (middleImage.getHeight() * middleScale);
+        int parallaxOffset = (int) ((xLvlOffset * 0.5) % middleWidth);
+        for (int x = -parallaxOffset; x < Game.GAME_WIDTH; x += middleWidth) {
+            gc.drawImage(middleImage, x, 375, middleWidth, middleHeight);
+        }
+		levelManager.draw(gc, xLvlOffset);
 	    player.render(gc, xLvlOffset);
 	    enemyManager.draw(gc, xLvlOffset);
 

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 
 import main.Game;
 import gamestates.Gamestate;
@@ -73,20 +74,19 @@ public class LevelManager {
         int spriteHeight = 32;
 
         // Loop through rows (j) and columns (i) to extract sub-images from the sprite atlas.
+        PixelReader reader = img.getPixelReader();
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < 12; i++) {
                 // Calculate the index for the current sub-image.
                 int index = j * 12 + i;
                 
-                // Create an ImageView to represent the sub-image.
-                ImageView imageView = new ImageView(img);
-                // Set the viewport to capture the sub-image.
-                imageView.setViewport(new Rectangle2D(i * spriteWidth, j * spriteHeight, spriteWidth, spriteHeight));
-                // Disable anti-aliasing for the ImageView
-                imageView.setSmooth(false);
+                // Create a WritableImage to represent the sub-image.
+                WritableImage tile = new WritableImage(spriteWidth, spriteHeight);
+                // Copy the sub-image pixels from the sprite atlas, preserving transparency.
+                tile.getPixelWriter().setPixels(0, 0, spriteWidth, spriteHeight, reader, i * spriteWidth, j * spriteHeight);
 
-                // Capture the sub-image and store it in the levelSprite array.
-                levelSprite[index] = imageView.snapshot(null, null);
+                // Store the sub-image in the levelSprite array.
+                levelSprite[index] = tile;
             }
         }
     }
@@ -100,6 +100,9 @@ public class LevelManager {
         for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
+                if (index == 11) {
+                    continue;
+                }
                 gc.drawImage(
                         levelSprite[index],
                         Game.TILES_SIZE * i - lvlOffset,
