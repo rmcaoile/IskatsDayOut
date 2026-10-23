@@ -61,6 +61,7 @@ public class Menu extends State implements Statemethods{
 		switch (event.getCode()){
 			case ENTER, SPACE, P -> {
 				System.out.println("Game Starting...");
+				game.getPlaying().resetAll();
 				Gamestate.state = Gamestate.PLAYING;
 			}
 			case A -> {

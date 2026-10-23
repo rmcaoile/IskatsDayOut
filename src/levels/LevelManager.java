@@ -48,6 +48,7 @@ public class LevelManager {
 
         Level newLevel = levels.get(lvlIndex);
         game.getPlaying().getEnemyManager().loadEnemies(newLevel);
+        game.getPlaying().getEnemyManager().resetAllEnemies();
         game.getPlaying().getPlayer().loadLvlData(newLevel.getLevelData());
         game.getPlaying().setMaxLvlOffset(newLevel.getLvlOffset());
     }
@@ -121,6 +122,18 @@ public class LevelManager {
         // Currently empty
     }
 
+    /**
+     * Resets the current level index to the first level and reloads its data,
+     * enemies, and tile offset.
+     */
+    public void resetToFirstLevel() {
+        lvlIndex = 0;
+        Level newLevel = levels.get(lvlIndex);
+        game.getPlaying().getEnemyManager().loadEnemies(newLevel);
+        game.getPlaying().getEnemyManager().resetAllEnemies();
+        game.getPlaying().getPlayer().loadLvlData(newLevel.getLevelData());
+        game.getPlaying().setMaxLvlOffset(newLevel.getLvlOffset());
+    }
     
     /**
      * Gets the current level.

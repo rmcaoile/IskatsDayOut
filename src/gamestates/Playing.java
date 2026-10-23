@@ -200,10 +200,14 @@ public class Playing extends State implements Statemethods {
 
 
 	/**
-	 * Resets the game state by clearing game over status, resetting the player, resetting all enemies,
+	 * Resets the game state to the first level, reloading level data,
+	 * clearing game over status, resetting the player, resetting all enemies,
 	 * and marking the level as not completed.
 	 */
 	public void resetAll() {
+		levelManager.resetToFirstLevel();
+		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+		xLvlOffset = 0;
 	    gameOver = false;
 	    player.resetAll();
 	    enemyManager.resetAllEnemies();
