@@ -163,6 +163,7 @@ public class Playing extends State implements Statemethods {
 	// game over and level completed shown here
 	@Override
 	public void draw(GraphicsContext gc) {
+		gc.setImageSmoothing(false);
         int bgScale = Game.GAME_HEIGHT / (int) bgImage.getHeight();
         int bgWidth = (int) (bgImage.getWidth() * bgScale);
         int bgHeight = Game.GAME_HEIGHT;
