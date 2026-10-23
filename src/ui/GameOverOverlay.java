@@ -40,6 +40,7 @@ public class GameOverOverlay {
     public void keyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ESCAPE) {
             // Reset game state and transition to the main menu
+            playing.resetToFirstLevel();
             playing.resetAll();
             Gamestate.state = Gamestate.MENU;
         }
