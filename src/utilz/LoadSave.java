@@ -18,6 +18,7 @@ public class LoadSave {
     public static final String HEARTS_UI = "ui_hearts";
     public static final String URM_BUTTONS = "urm_buttons.png";
     public static final String COMPLETED_IMG = "completed_sprite.png";
+    public static final String PAUSED_IMG = "paused_sprite.png";
 
     
     /* Retrieves a sprite atlas image based on the given file name.

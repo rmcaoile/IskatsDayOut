@@ -12,6 +12,7 @@ import main.Game;
 import ui.GameOverOverlay;
 import ui.GameWonOverlay;
 import ui.LevelCompletedOverlay;
+import ui.PausedOverlay;
 
 // The "Playing" state represents the main gameplay state where the player can control characters and interact with the game world.
 public class Playing extends State implements Statemethods {
@@ -29,6 +30,7 @@ public class Playing extends State implements Statemethods {
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompletedOverlay levelCompletedOverlay;
 	private GameWonOverlay gameWonOverlay;
+	private PausedOverlay pausedOverlay;
 
 	// Level offset and borders
 	private int xLvlOffset;
@@ -39,6 +41,7 @@ public class Playing extends State implements Statemethods {
 	// Game state flags
 	private boolean gameOver;
 	private boolean lvlCompleted;
+	private boolean paused;
 
 		
 	 /**
@@ -115,6 +118,7 @@ public class Playing extends State implements Statemethods {
 	    gameOverOverlay = new GameOverOverlay(this);
 	    levelCompletedOverlay = new LevelCompletedOverlay(this);
 	    gameWonOverlay = new GameWonOverlay(this);
+	    pausedOverlay = new PausedOverlay(this);
 	}
 
 	
@@ -125,7 +129,10 @@ public class Playing extends State implements Statemethods {
 	 */
 	@Override
 	public void update() {
-	    // Check if the level is completed and update the overlay
+	    if (paused) {
+	        pausedOverlay.update();
+	        return;
+	    }
 	    if (lvlCompleted) {
 	        levelCompletedOverlay.update();
 	    } else if (!gameOver) {
@@ -185,12 +192,14 @@ public class Playing extends State implements Statemethods {
 	    // Check if the game is over or the level is completed
 	    if (gameOver) {
 	        gameOverOverlay.draw(gc);
+	    } else if (paused) {
+	        pausedOverlay.draw(gc);
 	    } else if (lvlCompleted) {
 	        // Use an instance of LevelManager to get the current level index
 	        int currentLevelIndex = levelManager.getLvlIndex();
 	        
 	        // Draw the appropriate overlay based on the current level index
-	        if (currentLevelIndex == 2) {
+	        if (currentLevelIndex == levelManager.getAmountOfLevels() - 1) {
 	            gameWonOverlay.draw(gc);
 	        } else {
 	            levelCompletedOverlay.draw(gc);
@@ -204,11 +213,16 @@ public class Playing extends State implements Statemethods {
 	 * clearing game over status, resetting the player, resetting all enemies,
 	 * and marking the level as not completed.
 	 */
+	public void resetToFirstLevel() {
+	    levelManager.resetToFirstLevel();
+	    player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+	    xLvlOffset = 0;
+	    resetAll();
+	}
+
 	public void resetAll() {
-		levelManager.resetToFirstLevel();
-		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
-		xLvlOffset = 0;
 	    gameOver = false;
+	    paused = false;
 	    player.resetAll();
 	    enemyManager.resetAllEnemies();
 	    setLevelCompleted(false);
@@ -234,10 +248,10 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		if (!gameOver) {
-			if (lvlCompleted)
-				levelCompletedOverlay.mousePressed(event);
-		}	
+		if (gameOver) return;
+		if (paused) { pausedOverlay.mousePressed(event); return; }
+		if (lvlCompleted)
+			levelCompletedOverlay.mousePressed(event);
 	}
 
 	public void mouseDragged(MouseEvent event) {
@@ -249,28 +263,33 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
-		if (!gameOver) {
-			if (lvlCompleted)
-				levelCompletedOverlay.mouseReleased(event);
-		}					
+		if (gameOver) return;
+		if (paused) { pausedOverlay.mouseReleased(event); return; }
+		if (lvlCompleted)
+			levelCompletedOverlay.mouseReleased(event);
 	}
 
 
 	@Override
 	public void mouseMoved(MouseEvent event) {
-		if (!gameOver) {
-			if (lvlCompleted) {
-                levelCompletedOverlay.mouseMoved(event); // Ensure levelCompletedOverlay is not null
-            }
-		}
+		if (gameOver) return;
+		if (paused) { pausedOverlay.mouseMoved(event); return; }
+		if (lvlCompleted) {
+            levelCompletedOverlay.mouseMoved(event);
+        }
 	}
 
 
 	@Override
 	public void keyPressed(KeyEvent event) {
-	    if (gameOver) {
-	        gameOverOverlay.keyPressed(event);
-	    } else {
+		if (gameOver) {
+			gameOverOverlay.keyPressed(event);
+		} else if (paused) {
+			// ESC resumes
+			if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+				paused = false;
+			}
+		} else {
             switch (event.getCode()) {
                 case A, LEFT -> player.setLeft(true);
                 case D, RIGHT -> player.setRight(true);
@@ -303,7 +322,19 @@ public class Playing extends State implements Statemethods {
 	                	player.setCurrentHealth( player.getCurrentHealth() + 1); 
 	                	}
                 }
-                case B, ESCAPE, BACK_SPACE -> Gamestate.state = Gamestate.MENU;
+                case ESCAPE -> {
+                    if (gameOver) {
+                        resetToFirstLevel();
+                        Gamestate.state = Gamestate.MENU;
+                    } else if (lvlCompleted) {
+                        if (levelManager.getLvlIndex() == levelManager.getAmountOfLevels() - 1) {
+                            resetToFirstLevel();
+                            Gamestate.state = Gamestate.MENU;
+                        }
+                    } else {
+                        paused = true;
+                    }
+                }
             }
 	    }
 	}
@@ -325,6 +356,10 @@ public class Playing extends State implements Statemethods {
 	
 	public void setLevelCompleted(boolean levelCompleted) {
 		this.lvlCompleted = levelCompleted;
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 	
 	public void setMaxLvlOffset(int lvlOffset) {
