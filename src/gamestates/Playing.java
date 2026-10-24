@@ -72,17 +72,23 @@ public class Playing extends State implements Statemethods {
 	 * Resets the level completion flag to prepare for the new level.
 	 */
 	public void loadNextLevel() {
-	    // Reset game elements
-	    resetAll();
-	    
-	    // Load the next level
-	    levelManager.loadNextLevel();
-	    
-	    // Set the player spawn position for the new level
-	    player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
-	    
-	    // Reset the level completion flag
-	    setLevelCompleted(false);
+		// Preserve player health across level transitions
+		int savedHealth = player.getCurrentHealth();
+
+		// Reset game elements
+		resetAll();
+
+		// Restore health so it carries over
+		player.setCurrentHealth(savedHealth);
+
+		// Load the next level
+		levelManager.loadNextLevel();
+
+		// Set the player spawn position for the new level
+		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+
+		// Reset the level completion flag
+		setLevelCompleted(false);
 	}
 
 	
