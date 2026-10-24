@@ -82,6 +82,8 @@ public class Constants {
 			switch (enemy_type) {
 			case DOGGY:
 				return 1;		// can deal 1 dmg
+			case DOGGY2:
+				return 1;		// can deal 1 dmg
 			default:
 				return 0;
 			}

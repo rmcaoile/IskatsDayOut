@@ -19,6 +19,9 @@ public abstract class Enemy extends Entity {
     protected float attackDistance = Game.TILES_SIZE;
     protected boolean active = true;
     protected boolean attackChecked;
+    protected int hurtTimer = 0;
+    protected int hurtDir = 1;
+    protected boolean hurt = false;
 	
 	
 	public Enemy(double x, double y, int width, int height, int enemyType) {
@@ -131,6 +134,10 @@ public abstract class Enemy extends Entity {
 	 * @param amount The amount of damage to be inflicted.
 	 */
 	public void hurt(int amount) {
+		hurt(amount, 1);
+	}
+
+	public void hurt(int amount, int knockbackDir) {
 		// Ignore hits while a hit/death animation is already playing, so the
 		// animation cannot be reset by repeatedly hitting the enemy.
 		if (state == HIT || state == DEAD)
@@ -138,9 +145,44 @@ public abstract class Enemy extends Entity {
 
 	    // Decrease the enemy's health by the specified amount
 	    currentHealth -= amount;
-
-		// Always play the hit reaction first; death is handled once the hit animation finishes
+		hurtDir = knockbackDir;
+		hurtTimer = 20;
+		hurt = true;
 		newState(HIT);
+		// small upward knockback
+		if (!inAir) {
+			inAir = true;
+			airSpeed = -0.75f * Game.SCALE;
+		}
+	}
+
+	public boolean isInvulnerable() {
+		return hurtTimer > 0;
+	}
+
+	protected void updateHurt(int[][] lvlData) {
+		if (hurtTimer <= 0)
+			return;
+		// knockback
+		float kb = hurtDir * (walkSpeed * 4.0f);
+		if (CanMoveHere(hitbox.getX() + kb, hitbox.getY(), hitbox.getWidth(), hitbox.getHeight(), lvlData))
+			hitbox.setX(hitbox.getX() + kb);
+		// gravity
+		if (inAir) {
+			if (CanMoveHere(hitbox.getX(), (hitbox.getY() + airSpeed), hitbox.getWidth(), hitbox.getHeight(), lvlData)) {
+				hitbox.setY(hitbox.getY() + airSpeed);
+				airSpeed += GRAVITY;
+			} else {
+				hitbox.setY(GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed));
+				if (airSpeed > 0)
+					inAir = false;
+				else
+					airSpeed = 0;
+			}
+		} else if (!IsEntityOnFloor(hitbox, lvlData)) {
+			inAir = true;
+		}
+		hurtTimer--;
 	}
 
 
@@ -217,6 +259,8 @@ public abstract class Enemy extends Entity {
 		newState(IDLE);
 		active = true;
 		state = 0;
+		hurtTimer = 0;
+		hurt = false;
 	}
 	
 	public boolean isActive() {

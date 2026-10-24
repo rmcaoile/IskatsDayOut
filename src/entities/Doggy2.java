@@ -38,7 +38,9 @@ public class Doggy2 extends Enemy {
 	    if (firstUpdate) 
 	    	firstUpdateCheck(lvlData);
 
-	    if (inAir) {
+	    if (hurtTimer > 0) {
+	    	updateHurt(lvlData);
+	    } else if (inAir) {
 	    	updateInAir(lvlData);
 	    	
 	    } else {

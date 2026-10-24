@@ -50,7 +50,9 @@ public class Doggy extends Enemy {
 	        firstUpdateCheck(lvlData);
 
 	    // Checks if the Doggy is in the air
-	    if (inAir) {
+	    if (hurtTimer > 0) {
+	        updateHurt(lvlData);
+	    } else if (inAir) {
 	        // Updates the Doggy's position while in the air
 	        updateInAir(lvlData);
 	        

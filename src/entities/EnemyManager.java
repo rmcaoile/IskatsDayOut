@@ -110,7 +110,8 @@ public class EnemyManager {
 	    for (Doggy d : doggies)
 	        if (d.isActive())
 	            if (attackBox.intersects(d.getHitbox().getBoundsInLocal())) {
-	                d.hurt(Player.getAttackDamage());
+                int knockbackDir = (d.getHitbox().getX() > attackBox.getX()) ? 1 : -1;
+	                d.hurt(Player.getAttackDamage(), knockbackDir);
 	                return;
 	            }
 
@@ -118,7 +119,8 @@ public class EnemyManager {
 	    for (Doggy2 d2 : doggies2)
 	        if (d2.isActive())
 	            if (attackBox.intersects(d2.getHitbox().getBoundsInLocal())) {
-	                d2.hurt(Player.getAttackDamage());
+                int knockbackDir = (d2.getHitbox().getX() > attackBox.getX()) ? 1 : -1;
+	                d2.hurt(Player.getAttackDamage(), knockbackDir);
 	                return;
 	            }
 	}
