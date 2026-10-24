@@ -73,9 +73,10 @@ public class Doggy2 extends Enemy {
 	}
 	
 	
-	public int flipX() {
+	// To fit sprite in the the hitbox
+	public float flipX() {
 		if (walkDir == LEFT)
-			return width;
+			return width * 0.9f;
 		else
 			return 0;
 	}

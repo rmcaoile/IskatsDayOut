@@ -53,7 +53,7 @@ public class Player extends Entity {
 	public static float walkSpeed = 1.0f * Game.SCALE;
 	
 	// Flip X and W for rendering.
-	private int flipX = 0;
+	private float flipX = 0;
 	private int flipW = 1;
 
 	private boolean attackChecked;
@@ -320,7 +320,7 @@ public class Player extends Entity {
         // Adjust horizontal speed based on movement flags
         if (left) {
             xSpeed -= walkSpeed;
-            flipX = width * 2;
+            flipX = width * 2.25f;
             flipW = -1;
         }
         if (right) {

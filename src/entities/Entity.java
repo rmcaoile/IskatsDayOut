@@ -15,7 +15,7 @@ import main.Game;
 public abstract class Entity {
 
     protected double x, y;         		// The x and y-coordinate of the entity's position
-    protected int width, height;    	// The width and height of the entity's bounding box
+    protected float width, height;    	// The width and height of the entity's bounding box
     protected Rectangle hitbox;     	// The rectangular hitbox used for collision detection
     protected int aniTick, aniIndex; 	// Animation-related variables (tick and index)
     protected int state;             	// Current state of the entity (e.g., idle, running, attacking)
@@ -42,6 +42,7 @@ public abstract class Entity {
 
     // Draws the hitbox of the entity for debugging purposes.
     protected void drawHitbox(GraphicsContext gc, int xLvlOffset) {
+        gc.setStroke(Color.BLACK);
         gc.setStroke(hitbox.getStroke());
         gc.strokeRect(
                 hitbox.getX() - xLvlOffset,
