@@ -112,7 +112,6 @@ public class EnemyManager {
 	            if (attackBox.intersects(d.getHitbox().getBoundsInLocal())) {
                 int knockbackDir = (d.getHitbox().getX() > attackBox.getX()) ? 1 : -1;
 	                d.hurt(Player.getAttackDamage(), knockbackDir);
-	                return;
 	            }
 
 	    // Check for hits on Doggy2 entities
@@ -121,7 +120,6 @@ public class EnemyManager {
 	            if (attackBox.intersects(d2.getHitbox().getBoundsInLocal())) {
                 int knockbackDir = (d2.getHitbox().getX() > attackBox.getX()) ? 1 : -1;
 	                d2.hurt(Player.getAttackDamage(), knockbackDir);
-	                return;
 	            }
 	}
 
