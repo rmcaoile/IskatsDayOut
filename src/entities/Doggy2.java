@@ -51,8 +51,8 @@ public class Doggy2 extends Enemy {
 	            case RUNNING:
 	            	if (canSeePlayer(lvlData, player)) {
 	            		turnTowardsPlayer(player);
-					if (isPlayerCloseForAttack(player))
-						newState(ATTACK);
+						if (attackBox.intersects(player.getHitbox().getBoundsInLocal()))
+							newState(ATTACK);
 	            	}
 	            
 					move(lvlData);

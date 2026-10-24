@@ -150,11 +150,11 @@ public class Player extends Entity {
 	private void updateAttackBox() {
 	    double attackBoxOffset = Game.SCALE * 9;
 
-	    if (right) {
-	    	// If the player is facing right, position the attack box to the right of the player's hitbox
-	        attackBox.setX(hitbox.getX() + hitbox.getWidth() - attackBoxOffset);
-	    } else if (left) {
-	    	// If the player is facing left, position the attack box to the left of the player's hitbox
+	    if (flipW >= 0) {
+	    	// Facing right
+	        attackBox.setX(hitbox.getX() + hitbox.getWidth() - attackBoxOffset * 1.7);
+	    } else {
+	    	// Facing left
 	        attackBox.setX(hitbox.getX() - hitbox.getWidth() + attackBoxOffset);
 	    }
 	    // Set the Y coordinate of the attack box above the player's hitbox by the specified offset

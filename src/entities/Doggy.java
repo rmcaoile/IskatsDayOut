@@ -17,8 +17,8 @@ public class Doggy extends Enemy {
 	}
 	
 	private void initAttackBox() {
-		attackBox = new Rectangle(x, y, (int) (55 * Game.SCALE), (int) (31 * Game.SCALE));
-		attackBoxOffsetX = (int) (Game.SCALE * 10);   // 30 on left and 30 on right  // 20 on middle
+		attackBox = new Rectangle(x, y, (int) (45 * Game.SCALE), (int) (31 * Game.SCALE));
+		attackBoxOffsetX = (int) (Game.SCALE * 5);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class Doggy extends Enemy {
 	                // Checks if the Doggy sees the player, and sets the state to attack if close
 	                if (canSeePlayer(lvlData, player)) {
 	                    turnTowardsPlayer(player);
-	                    if (isPlayerCloseForAttack(player))
+	                    if (attackBox.intersects(player.getHitbox().getBoundsInLocal()))
 	                        newState(ATTACK);
 	                }
 	                // Moves the Doggy
