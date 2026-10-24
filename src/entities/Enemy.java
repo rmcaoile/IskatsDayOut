@@ -148,7 +148,11 @@ public abstract class Enemy extends Entity {
 	    // Check if the enemy's attackBox intersects with the player's hitbox
 	    if (attackBox.intersects(player.getHitbox().getBoundsInLocal())) {
 	        // If a hit occurs, reduce the player's health by the enemy's damage
-	        player.changeHealth(-GetEnemyDmg(enemyType));
+            if (!player.isInvulnerable()) {
+                player.changeHealth(-GetEnemyDmg(enemyType));
+                int knockbackDir = (player.getHitbox().getX() > hitbox.getX()) ? 1 : -1;
+                player.startHurt(knockbackDir);
+            }
 	    }
 	    // Mark the attack as checked
 	    attackChecked = true;

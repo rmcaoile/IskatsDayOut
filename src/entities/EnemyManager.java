@@ -77,8 +77,8 @@ public class EnemyManager {
 		        		d.getHitbox().getX() - DOGGY_DRAWOFFSET_X - xLvlOffset + d.flipX(), 
 		        		d.getHitbox().getY() - DOGGY_DRAWOFFSET_Y, 
 		        		DOGGY_WIDTH * d.flipW(), DOGGY_HEIGHT);
-//		        d.drawHitbox(gc, xLvlOffset);
-//				d.drawAttackBox(gc, xLvlOffset);
+		        d.drawHitbox(gc, xLvlOffset);
+				d.drawAttackBox(gc, xLvlOffset);
 	        }
 	    }
 	    
@@ -94,8 +94,8 @@ public class EnemyManager {
 		        		d2.getHitbox().getX() - DOGGY_DRAWOFFSET_X - xLvlOffset + d2.flipX(), 
 		        		d2.getHitbox().getY() - DOGGY_DRAWOFFSET_Y, 
 		        		DOGGY_WIDTH * d2.flipW(), DOGGY_HEIGHT);
-//		        d2.drawHitbox(gc, xLvlOffset);
-//				d2.drawAttackBox(gc, xLvlOffset);
+		        d2.drawHitbox(gc, xLvlOffset);
+				d2.drawAttackBox(gc, xLvlOffset);
 	        }
 	    }
 	}

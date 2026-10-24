@@ -21,6 +21,9 @@ public class Player extends Entity {
     private Image img; 										// The sprite sheet image containing various player animations.
 
     private boolean moving = false, attacking = false; 		// Flags indicating whether the player is moving or attacking.
+    private boolean hurt = false;
+    private int hurtTimer = 0;
+    private int hurtDir = 1;
     private boolean left, right, jump, running; 			// Flags representing the player's movement direction.
     private boolean sleeping, licking, eating, scratching, pooping, looking, tricks, spin, chills, surprised, revive;		// Flags representing various player actions.
     private int[][] lvlData;
@@ -90,6 +93,36 @@ public class Player extends Entity {
 			playing.setGameOver(true);
 			return;
 		}
+
+		// Hurt state, play hurt animation, apply knockback + gravity, ignore input
+		if (hurtTimer > 0) {
+			hurtTimer--;
+			// knockback
+			float kb = hurtDir * (walkSpeed * 1f);
+			if (CanMoveHere(hitbox.getX() + kb, hitbox.getY(), hitbox.getWidth(), hitbox.getHeight(), lvlData))
+				hitbox.setX(hitbox.getX() + kb);
+			// gravity
+			if (inAir) {
+				if (CanMoveHere(hitbox.getX(), (hitbox.getY() + airSpeed), hitbox.getWidth(), hitbox.getHeight(), lvlData)) {
+					hitbox.setY(hitbox.getY() + airSpeed);
+					airSpeed += GRAVITY;
+				} else {
+					hitbox.setY(GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed));
+					if (airSpeed > 0) resetInAir();
+					else airSpeed = fallSpeedAfterCollision;
+				}
+			} else if (!IsEntityOnFloor(hitbox, lvlData)) {
+				inAir = true;
+			}
+			updateAnimationTick();
+			state = HURT;
+			if (hurtTimer == 0) {
+				hurt = false;
+				aniIndex = 0;
+				aniTick = 0;
+			}
+			return;
+		}
 		
 		// Updates the player's position
 		updatePos(); 				
@@ -140,8 +173,8 @@ public class Player extends Entity {
 	            hitbox.getY() - yDrawOffset, 
 	            2*width * flipW, 2*height 	 						// Size of Cat Player
 	    );
-//		drawHitbox(gc, lvlOffset);
-//	    drawAttackBox(gc, lvlOffset);
+		drawHitbox(gc, lvlOffset);
+	    drawAttackBox(gc, lvlOffset);
 		drawUI(gc);
 	}
 
@@ -370,6 +403,26 @@ public class Player extends Entity {
 		else if (currentHealth >= maxHealth)
 			currentHealth = maxHealth;
 	}
+
+	public void startHurt(int knockbackDir) {
+		if (hurtTimer > 0)
+			return;
+		hurt = true;
+		hurtTimer = 50;
+		hurtDir = knockbackDir;
+		state = HURT;
+		aniIndex = 0;
+		aniTick = 0;
+		// small upward knockback
+		if (!inAir) {
+			inAir = true;
+			airSpeed = -1.5f * Game.SCALE;
+		}
+	}
+
+	public boolean isInvulnerable() {
+		return hurtTimer > 0;
+	}
 	
 	
 	/* Loads player animations from the sprite sheet and populates the animations array.
@@ -440,6 +493,9 @@ public class Player extends Entity {
 	    moving = false;
 	    state = IDLE_SIT_TAIL_DOWN;
 	    currentHealth = maxHealth;
+	    hurt = false;
+	    hurtTimer = 0;
+	    airSpeed = 0;
 
 	    hitbox.setX(x);
 	    hitbox.setY(y);
