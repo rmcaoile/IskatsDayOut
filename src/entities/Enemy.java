@@ -131,17 +131,16 @@ public abstract class Enemy extends Entity {
 	 * @param amount The amount of damage to be inflicted.
 	 */
 	public void hurt(int amount) {
+		// Ignore hits while a hit/death animation is already playing, so the
+		// animation cannot be reset by repeatedly hitting the enemy.
+		if (state == HIT || state == DEAD)
+			return;
+
 	    // Decrease the enemy's health by the specified amount
 	    currentHealth -= amount;
 
-	    // Check if the enemy's health has fallen to or below zero
-	    if (currentHealth <= 0) {
-	        // If so, set the state to DEAD
-	        newState(DEAD);
-	    } else {
-	        // Otherwise, set the state to HIT
-	        newState(HIT);
-	    }
+		// Always play the hit reaction first; death is handled once the hit animation finishes
+		newState(HIT);
 	}
 
 
@@ -185,7 +184,14 @@ public abstract class Enemy extends Entity {
 
 	            // Handle state transitions based on animation completion
 	            switch (state) {
-	                case ATTACK, HIT -> state = IDLE;
+	                case ATTACK -> state = IDLE;
+					case HIT -> {
+						if (currentHealth <= 0) {
+							newState(DEAD);
+						} else {
+							state = IDLE;
+						}
+					}
 	                case DEAD -> active = false;
 	            }
 	        }
