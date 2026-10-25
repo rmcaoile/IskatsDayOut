@@ -45,6 +45,11 @@ public class Game extends AnimationTimer {
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);	// The size of each tile after applying scaling.	
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;			// The width of the game in pixels.
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;			// The height of the game in pixels.
+
+    // Resize / letterbox state
+    private double scale = 1.0;
+    private double offsetX = 0;
+    private double offsetY = 0;
     
     
     public Game(Stage primaryStage) {
@@ -136,6 +141,26 @@ public class Game extends AnimationTimer {
 	 * @param gc The GraphicsContext used for rendering.
 	 */
 	public void render(GraphicsContext gc) {
+        // Clear full canvas (black bars for letterboxing)
+        gc.setFill(javafx.scene.paint.Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        // Compute uniform scale to fit logical resolution
+        double sx = canvas.getWidth() / GAME_WIDTH;
+        double sy = canvas.getHeight() / GAME_HEIGHT;
+        scale = Math.min(sx, sy);
+        offsetX = (canvas.getWidth() - GAME_WIDTH * scale) / 2.0;
+        offsetY = (canvas.getHeight() - GAME_HEIGHT * scale) / 2.0;
+
+        gc.save();
+        gc.translate(offsetX, offsetY);
+        gc.scale(scale, scale);
+
+        // Clip to logical game area so nothing draws into letterbox bars
+        gc.beginPath();
+        gc.rect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gc.clip();
+
 	    switch (Gamestate.state) {
 	        case MENU -> menu.draw(gc);          // Render content for the menu state
 	        case PLAYING -> playing.draw(gc);    // Render content for the playing state
@@ -145,6 +170,8 @@ public class Game extends AnimationTimer {
 	            // No specific rendering for other states
 	        }
 	    }
+
+        gc.restore();
 	}
 
 	
@@ -166,6 +193,26 @@ public class Game extends AnimationTimer {
         canvas.setFocusTraversable(true); // Ensure the canvas receives input events
     }
 	
+	public double toLogicalX(double screenX) {
+        return (screenX - offsetX) / scale;
+    }
+
+    public double toLogicalY(double screenY) {
+        return (screenY - offsetY) / scale;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public double getOffsetX() {
+        return offsetX;
+    }
+
+    public double getOffsetY() {
+        return offsetY;
+    }
+    
 	public void windowFocusLost() {
 		if (Gamestate.state == Gamestate.PLAYING)
 			playing.getPlayer().resetDirBooleans();

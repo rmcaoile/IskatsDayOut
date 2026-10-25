@@ -22,11 +22,12 @@ public class GameStage {
 	// Sets up the primary stage (main window) properties
 	private void initWindow() {
         primaryStage.setTitle("Game Window");
-        primaryStage.setWidth(Game.GAME_WIDTH);
-        primaryStage.setHeight(Game.GAME_HEIGHT);
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(Game.GAME_WIDTH / 2.0);
+        primaryStage.setMinHeight(Game.GAME_HEIGHT / 2.0);
 
         setupScene();
+        primaryStage.sizeToScene();
 
         primaryStage.setOnCloseRequest(event -> {
             Platform.exit();
@@ -50,7 +51,10 @@ public class GameStage {
 	// Sets up the root layout with the game scene and displays it
 	private void setupScene() {
         StackPane root = new StackPane(canvas);
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        canvas.widthProperty().bind(root.widthProperty());
+        canvas.heightProperty().bind(root.heightProperty());
+        primaryStage.setScene(scene);
     }
 
 

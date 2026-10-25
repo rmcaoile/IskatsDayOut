@@ -127,6 +127,6 @@ public class LevelCompletedOverlay {
      * @return True if the mouse coordinates are within the bounds of the button, false otherwise.
      */
     private boolean isIn(UrmButton b, MouseEvent e) {
-        return b.getBounds().contains(e.getX(), e.getY());
+        return b.getBounds().contains(playing.getGame().toLogicalX(e.getX()), playing.getGame().toLogicalY(e.getY()));
     }
 }
