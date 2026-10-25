@@ -34,13 +34,13 @@ public class Constants {
 		public static final float DOGGY_DRAWOFFSET_Y = 80;
 
 		// Attack box dimensions
-		public static final int DOGGY_ATTACK_WIDTH_DEFAULT = 65;
+		public static final int DOGGY_ATTACK_WIDTH_DEFAULT = 56;
 		public static final int DOGGY_ATTACK_HEIGHT_DEFAULT = 31;
 		public static final int DOGGY2_ATTACK_WIDTH_DEFAULT = 75;
 		public static final int DOGGY2_ATTACK_HEIGHT_DEFAULT = 31;
 
 		// Attack box horizontal offset from hitbox
-		public static final int DOGGY_ATTACK_OFFSET_X_DEFAULT = 5;
+		public static final int DOGGY_ATTACK_OFFSET_X_DEFAULT = 1;
 		public static final int DOGGY2_ATTACK_OFFSET_X_DEFAULT = 10;
 		
 		public static int GetSpriteAmount(int enemy_type, int enemy_state) {

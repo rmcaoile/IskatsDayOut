@@ -53,6 +53,7 @@ public class Player extends Entity {
 	// Walk speed of cat
 	public static float walkSpeed = 1.0f * Game.SCALE;
 	private static final float BASE_WALK_SPEED = 1.0f * Game.SCALE;		
+	private static final float ATTACK_LUNGE_SPEED = 1;		
 
 	
 	// Flip X and W for rendering.
@@ -179,8 +180,8 @@ public class Player extends Entity {
 	            hitbox.getY() - yDrawOffset, 
 	            2*width * flipW, 2*height 	 						// Size of Cat Player
 	    );
-		drawHitbox(gc, lvlOffset);
-	    drawAttackBox(gc, lvlOffset);
+		// drawHitbox(gc, lvlOffset);
+	    // drawAttackBox(gc, lvlOffset);
 		drawUI(gc);
 	}
 
@@ -318,7 +319,7 @@ public class Player extends Entity {
             jump();
 
         // If the player is not in the air and is not moving left or right or is moving both left and right, return
-        if (!inAir && ((!left && !right) || (left && right)))
+        if (!inAir && ((!left && !right) || (left && right)) && !attacking)
             return;
 
         float xSpeed = 0;
@@ -333,6 +334,11 @@ public class Player extends Entity {
             xSpeed += walkSpeed;
             flipX = 0;
             flipW = 1;
+        }
+
+        // Small forward lunge when attacking
+        if (attacking) {
+            xSpeed += flipW * ATTACK_LUNGE_SPEED;
         }
 
         // If the player is not in the air and is not on the floor, set the in-air flag to true
@@ -415,7 +421,7 @@ public class Player extends Entity {
 			return;
 		hurt = true;
 		hurtTimer = 50;
-		invulnerableTimer = 80;
+		invulnerableTimer = 150;
 		hurtDir = knockbackDir;
 		state = HURT;
 		aniIndex = 0;
