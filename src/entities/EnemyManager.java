@@ -44,6 +44,7 @@ public class EnemyManager {
         for (Doggy d : doggies)
             if (d.isActive()) {
                 d.update(lvlData, player);
+                checkContactDamage(d, player);
                 isAnyActive = true;
             }
 
@@ -51,6 +52,7 @@ public class EnemyManager {
         for (Doggy2 d2 : doggies2)
             if (d2.isActive()) {
                 d2.update(lvlData, player);
+                checkContactDamage(d2, player);
                 isAnyActive = true;
             }
 
@@ -121,6 +123,10 @@ public class EnemyManager {
                 int knockbackDir = (d2.getHitbox().getX() > attackBox.getX()) ? 1 : -1;
 	                d2.hurt(Player.getAttackDamage(), knockbackDir);
 	            }
+	}
+
+	private void checkContactDamage(Enemy enemy, Player player) {
+	    enemy.checkContactHit(player);
 	}
 
 	

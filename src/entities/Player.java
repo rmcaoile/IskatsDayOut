@@ -23,6 +23,7 @@ public class Player extends Entity {
     private boolean moving = false, attacking = false; 		// Flags indicating whether the player is moving or attacking.
     private boolean hurt = false;
     private int hurtTimer = 0;
+    private int invulnerableTimer = 0;
     private int hurtDir = 1;
     private boolean left, right, jump, running; 			// Flags representing the player's movement direction.
     private boolean sleeping, licking, eating, scratching, pooping, looking, tricks, spin, chills, surprised, revive;		// Flags representing various player actions.
@@ -51,6 +52,8 @@ public class Player extends Entity {
 	public static int attackDamage = 1;
 	// Walk speed of cat
 	public static float walkSpeed = 1.0f * Game.SCALE;
+	private static final float BASE_WALK_SPEED = 1.0f * Game.SCALE;		
+
 	
 	// Flip X and W for rendering.
 	private float flipX = 0;
@@ -87,6 +90,9 @@ public class Player extends Entity {
 	// Updates the player's position, animation, and other properties.
 	public void update() {
 		updateAttackBox();
+		
+		if (invulnerableTimer > 0)
+			invulnerableTimer--;
 		
 		// Update that dictates when is the game over; which is when Cat health is at 0
 		if (currentHealth <= 0) {
@@ -409,19 +415,18 @@ public class Player extends Entity {
 			return;
 		hurt = true;
 		hurtTimer = 50;
+		invulnerableTimer = 80;
 		hurtDir = knockbackDir;
 		state = HURT;
 		aniIndex = 0;
 		aniTick = 0;
 		// small upward knockback
-		if (!inAir) {
-			inAir = true;
-			airSpeed = -1.5f * Game.SCALE;
-		}
+		inAir = true;
+		airSpeed = -1.5f * Game.SCALE;
 	}
 
 	public boolean isInvulnerable() {
-		return hurtTimer > 0;
+		return invulnerableTimer > 0;
 	}
 	
 	
@@ -496,6 +501,8 @@ public class Player extends Entity {
 	    hurt = false;
 	    hurtTimer = 0;
 	    airSpeed = 0;
+	    walkSpeed = BASE_WALK_SPEED;
+	    running = false;
 
 	    hitbox.setX(x);
 	    hitbox.setY(y);
@@ -514,7 +521,13 @@ public class Player extends Entity {
 	}
 	
 	public static void setWalkSpeed(float accelerate) {
-		Player.walkSpeed = walkSpeed*accelerate;
+		if (accelerate == 2) {
+			Player.walkSpeed = BASE_WALK_SPEED * 2;
+		} else if (accelerate == 0.5f) {
+			Player.walkSpeed = BASE_WALK_SPEED;
+		} else {
+			Player.walkSpeed = BASE_WALK_SPEED * accelerate;
+		}
 	}
 	public void setRun(boolean running) {
 		this.running = running;

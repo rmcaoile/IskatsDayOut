@@ -199,6 +199,21 @@ public abstract class Enemy extends Entity {
 	    // Mark the attack as checked
 	    attackChecked = true;
 	}
+
+	protected void checkContactHit(Player player) {
+	    // Ignore contact damage while a hit/death animation is already playing
+	    if (state == HIT || state == DEAD)
+	        return;
+
+	    // Check if the player's hitbox intersects with this enemy's hitbox
+	    if (hitbox.intersects(player.getHitbox().getBoundsInLocal())) {
+	        if (!player.isInvulnerable()) {
+	            player.changeHealth(-GetEnemyDmg(enemyType));
+	            int knockbackDir = (player.getHitbox().getX() > hitbox.getX()) ? 1 : -1;
+	            player.startHurt(knockbackDir);
+	        }
+	    }
+	}
 	
 	
 	protected void updateInAir(int[][] lvlData) {
