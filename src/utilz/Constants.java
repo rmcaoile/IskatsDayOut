@@ -21,17 +21,27 @@ public class Constants {
 		public static final int DOGGY_WIDTH_DEFAULT = 48;
 		public static final int DOGGY_HEIGHT_DEFAULT = 48;
 		
-		public static final int DOGGY_HITBOX_WIDTH = 34;
-		public static final int DOGGY_HITBOX_HEIGHT= 31;
+		public static final float DOGGY_HITBOX_WIDTH = 34 * 1.6f;
+		public static final float DOGGY_HITBOX_HEIGHT= 31;
 		
 		public static final int DOGGY_NUM_STATES = 5;
 		public static final int DOGGY_MAX_INDEX = 6;
 
-		public static final int DOGGY_WIDTH = (int) (DOGGY_WIDTH_DEFAULT * Game.SCALE);
-		public static final int DOGGY_HEIGHT = (int) (DOGGY_HEIGHT_DEFAULT * Game.SCALE);
+		public static final float DOGGY_WIDTH = (DOGGY_WIDTH_DEFAULT * Game.SCALE) * 1.5f;
+		public static final float DOGGY_HEIGHT = (DOGGY_HEIGHT_DEFAULT * Game.SCALE) * 1.5f;
 
-		public static final int DOGGY_DRAWOFFSET_X = (int) (4 * Game.SCALE);		// crabby hitbox starts at 3 x
-		public static final int DOGGY_DRAWOFFSET_Y = (int) (16 * Game.SCALE);		// crabby hitbox starts at 16 y
+		public static final float DOGGY_DRAWOFFSET_X = 11;
+		public static final float DOGGY_DRAWOFFSET_Y = 80;
+
+		// Attack box dimensions
+		public static final int DOGGY_ATTACK_WIDTH_DEFAULT = 65;
+		public static final int DOGGY_ATTACK_HEIGHT_DEFAULT = 31;
+		public static final int DOGGY2_ATTACK_WIDTH_DEFAULT = 75;
+		public static final int DOGGY2_ATTACK_HEIGHT_DEFAULT = 31;
+
+		// Attack box horizontal offset from hitbox
+		public static final int DOGGY_ATTACK_OFFSET_X_DEFAULT = 5;
+		public static final int DOGGY2_ATTACK_OFFSET_X_DEFAULT = 10;
 		
 		public static int GetSpriteAmount(int enemy_type, int enemy_state) {
 

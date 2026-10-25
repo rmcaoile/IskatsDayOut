@@ -24,7 +24,7 @@ public abstract class Enemy extends Entity {
     protected boolean hurt = false;
 	
 	
-	public Enemy(double x, double y, int width, int height, int enemyType) {
+	public Enemy(double x, double y, float width, float height, int enemyType) {
 		super(x, y, width, height);
 		this.enemyType = enemyType;
 		maxHealth = GetMaxHealth(enemyType);

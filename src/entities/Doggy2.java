@@ -17,8 +17,8 @@ public class Doggy2 extends Enemy {
 	}
 	
 	private void initAttackBox() {
-		attackBox = new Rectangle(x, y, (int) (55 * Game.SCALE), (int) (31 * Game.SCALE));
-		attackBoxOffsetX = (int) (Game.SCALE * 10);   // 30 on left and 30 on right  // 20 on middle
+		attackBox = new Rectangle(x, y, (int) (DOGGY2_ATTACK_WIDTH_DEFAULT * Game.SCALE), (int) (DOGGY2_ATTACK_HEIGHT_DEFAULT * Game.SCALE));
+		attackBoxOffsetX = (int) (DOGGY2_ATTACK_OFFSET_X_DEFAULT * Game.SCALE);
 	}
 	
 	

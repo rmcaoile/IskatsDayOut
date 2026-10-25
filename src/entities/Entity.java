@@ -33,7 +33,7 @@ public abstract class Entity {
      * @param width  The width of the entity.
      * @param height The height of the entity.
      */
-    public Entity(double x, double y, int width, int height) {
+    public Entity(double x, double y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -61,7 +61,7 @@ public abstract class Entity {
 
     
     // Initializes the hitbox with the specified width and height.
-    protected void initHitbox(int width, int height) {
+    protected void initHitbox(float width, float height) {
         hitbox = new Rectangle(x, y, (int) (width * Game.SCALE), (int) (height * Game.SCALE));
     }
     
