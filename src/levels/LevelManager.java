@@ -119,6 +119,15 @@ public class LevelManager {
                 );
             }
         }
+        ArrayList<Prop> props = levels.get(lvlIndex).getProps();
+        if (props != null) {
+            for (Prop prop : props) {
+                if (prop.getImage() == null) {
+                    continue;
+                }
+                gc.drawImage(prop.getImage(), prop.getX() - lvlOffset, prop.getY());
+            }
+        }
     }
 
     /**

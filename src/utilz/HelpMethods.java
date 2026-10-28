@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import main.Game;
 import entities.Doggy;
 import entities.Doggy2;
+import levels.Prop;
 
 public class HelpMethods {
 
@@ -192,6 +193,33 @@ public class HelpMethods {
                 int value = (int) (color.getGreen() * 255);
                 if (value == DOGGY2) {
                     list.add(new Doggy2(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    // Get a list of Props from an image
+    public static ArrayList<Prop> GetProps(Image img, ArrayList<Image> propImages) {
+        ArrayList<Prop> list = new ArrayList<>();
+        if (propImages == null || propImages.isEmpty()) {
+            return list;
+        }
+        PixelReader pixelReader = img.getPixelReader();
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = pixelReader.getColor(i, j);
+                int value = (int) (color.getRed() * 255);
+                if (value >= 201) {
+                    int propId = value - 201;
+                    if (propId >= 0 && propId < propImages.size()) {
+                        Image propImg = propImages.get(propId);
+                        if (propImg != null) {
+                            double x = i * Game.TILES_SIZE;
+                            double y = (j + 1) * Game.TILES_SIZE - propImg.getHeight();
+                            list.add(new Prop(x, y, propImg));
+                        }
+                    }
                 }
             }
         }

@@ -2,6 +2,13 @@ package utilz;
 
 import javafx.scene.image.Image;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
 // Utility class for loading and saving game-related resources.
 public class LoadSave {
     private static Image img;
@@ -50,6 +57,39 @@ public class LoadSave {
         }
 
         return images;
+    }
+
+    // Retrieves all prop images from images/level_assets/props in alphabetical order
+    public static ArrayList<Image> GetAllProps() {
+        ArrayList<Image> propsList = new ArrayList<>();
+        try {
+            URL url = LoadSave.class.getResource("/images/level_assets/props");
+            if (url == null) {
+                return propsList;
+            }
+            if ("file".equals(url.getProtocol())) {
+                File dir = new File(url.toURI());
+                if (dir.exists() && dir.isDirectory()) {
+                    File[] files = dir.listFiles((d, name) -> {
+                        String lower = name.toLowerCase();
+                        return lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".gif");
+                    });
+                    if (files != null) {
+                        Arrays.sort(files, Comparator.comparing(File::getName));
+                        for (File f : files) {
+                            try {
+                                propsList.add(new Image("images/level_assets/props/" + f.getName()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return propsList;
     }
 
     // Retrieves a health display image based on the given file name and current health value

@@ -9,6 +9,7 @@ import entities.Doggy2;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import main.Game;
+import utilz.LoadSave;
 
 /**
  * Represents a game level, containing level data, enemy information, and player spawn point.
@@ -19,6 +20,7 @@ public class Level {
     private int[][] lvlData; 				// 2D array storing the tile indices for each position in the level.
     private ArrayList<Doggy> dogs; 			// List of Doggy enemies in the level.
     private ArrayList<Doggy2> dogs2; 		// List of Doggy2 enemies in the level.
+    private ArrayList<Prop> props; 			// List of props in the level.
     private int lvlTilesWide; 				// Width of the level in tiles.
     private int maxTilesOffset; 			// Maximum offset in tiles before reaching the end of the level.
     private int maxLvlOffsetX; 				// Maximum offset in pixels before reaching the end of the level in the x-direction.
@@ -32,6 +34,7 @@ public class Level {
         this.img = img;
         createLevelData();
         createEnemies();
+        createProps();
         calcLvlOffsets();
         calcPlayerSpawn();
     }
@@ -51,6 +54,10 @@ public class Level {
         // Create Doggy and Doggy2 enemies using utility methods from HelpMethods class.
         dogs = GetDogs(img);
         dogs2 = GetDogs2(img);
+    }
+
+    private void createProps() {
+        props = GetProps(img, LoadSave.GetAllProps());
     }
 
     private void createLevelData() {
@@ -99,6 +106,14 @@ public class Level {
      */
     public ArrayList<Doggy2> getDoggy2() {
         return dogs2;
+    }
+
+    /**
+     * Gets the list of props in the level.
+     * @return The list of props.
+     */
+    public ArrayList<Prop> getProps() {
+        return props;
     }
 
     /**
