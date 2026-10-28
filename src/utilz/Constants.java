@@ -6,7 +6,7 @@ public class Constants {
 
 	public static final float GRAVITY = 0.04f * Game.SCALE;
 	public static final int ANI_SPEED = 25;
-    public static final int SPRITE_THRESHOLD = 48;
+	public static final int SPRITE_THRESHOLD = 140;
 	
 	public static class EnemyConstants {
 		public static final int DOGGY = 0;

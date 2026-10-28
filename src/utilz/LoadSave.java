@@ -8,7 +8,7 @@ public class LoadSave {
 
     // File names for sprite atlases
     public static final String PLAYER_ATLAS = "Player_Cat_Sprite.png";
-    public static final String LEVEL_ATLAS = "stone_tiles.png";
+    public static final String LEVEL_ATLAS = "tileset_1.png";
 
     // File names for enemy sprites
     public static final String DOGGY_SPRITE = "Enemy_Dog_sprite.png";

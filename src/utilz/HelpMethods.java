@@ -46,8 +46,13 @@ public class HelpMethods {
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
         int value = lvlData[yTile][xTile];
 
-        // Use constants instead of literal values
-        if (value >= SPRITE_THRESHOLD || value < 0 || value != 11) {
+        if (value < 0 || value >= SPRITE_THRESHOLD) {
+            return false;
+        }
+
+        int atlasCols = 10;
+        int row = value / atlasCols;
+        if (row < 5) {
             return true;
         }
         return false;
@@ -139,9 +144,15 @@ public class HelpMethods {
                 Color color = pixelReader.getColor(i, j);
                 int value = (int) (color.getRed() * 255);
 
-                // Use the constant SPRITE_THRESHOLD instead of the literal value 48
-                if (value >= SPRITE_THRESHOLD) {
-                    value = 0;
+                if (value == 0) {
+                    value = -1;
+                } else {
+                    int idx = value - 1;
+                    if (idx < 0 || idx >= SPRITE_THRESHOLD) {
+                        value = -1;
+                    } else {
+                        value = idx;
+                    }
                 }
 
                 lvlData[j][i] = value;

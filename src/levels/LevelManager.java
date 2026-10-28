@@ -22,6 +22,11 @@ public class LevelManager {
     private ArrayList<Level> levels; 	// List of levels in the game.
     private int lvlIndex = 0; 			// Index indicating the current level.
 
+    private static final int ATLAS_COLS = 10;
+    private static final int ATLAS_ROWS = 14;
+    private static final int SPRITE_WIDTH = 32;
+    private static final int SPRITE_HEIGHT = 32;
+
 
     /**
      * Constructs a LevelManager for the specified game.
@@ -70,21 +75,19 @@ public class LevelManager {
         Image img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
         
         // Initialize the array to store level sprites.
-        levelSprite = new Image[48];
-        int spriteWidth = 32;
-        int spriteHeight = 32;
+        levelSprite = new Image[ATLAS_COLS * ATLAS_ROWS];
 
         // Loop through rows (j) and columns (i) to extract sub-images from the sprite atlas.
         PixelReader reader = img.getPixelReader();
-        for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < 12; i++) {
+        for (int j = 0; j < ATLAS_ROWS; j++) {
+            for (int i = 0; i < ATLAS_COLS; i++) {
                 // Calculate the index for the current sub-image.
-                int index = j * 12 + i;
+                int index = j * ATLAS_COLS + i;
                 
                 // Create a WritableImage to represent the sub-image.
-                WritableImage tile = new WritableImage(spriteWidth, spriteHeight);
+                WritableImage tile = new WritableImage(SPRITE_WIDTH, SPRITE_HEIGHT);
                 // Copy the sub-image pixels from the sprite atlas, preserving transparency.
-                tile.getPixelWriter().setPixels(0, 0, spriteWidth, spriteHeight, reader, i * spriteWidth, j * spriteHeight);
+                tile.getPixelWriter().setPixels(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT, reader, i * SPRITE_WIDTH, j * SPRITE_HEIGHT);
 
                 // Store the sub-image in the levelSprite array.
                 levelSprite[index] = tile;
@@ -101,7 +104,10 @@ public class LevelManager {
         for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
-                if (index == 11) {
+                if (index < 0) {
+                    continue;
+                }
+                if (index >= levelSprite.length) {
                     continue;
                 }
                 gc.drawImage(
