@@ -47,6 +47,8 @@ public class Player extends Entity {
 	private int healthDisplayHeight = (int) (11 * Game.SCALE * 2);		// 11 height
 	private int healthDisplayX = (int) (15 * Game.SCALE);
 	private int healthDisplayY = (int) (20 * Game.SCALE);
+	private boolean showHealthUI = true;
+	private boolean menuMode = false;
 
 	// Attack damage of cat
 	public static int attackDamage = 1;
@@ -73,7 +75,11 @@ public class Player extends Entity {
         loadAnimations();
         initHitbox(2*PLAYER_HITBOX_WIDTH, 2*PLAYER_HITBOX_HEIGHT);		
 		initAttackBox();
-    }
+		if (playing == null) {
+			showHealthUI = false;
+			menuMode = true;
+		}
+	}
 	
 	// Set the spawn point of the player.
 	public void setSpawn(Point2D spawn) {
@@ -81,6 +87,13 @@ public class Player extends Entity {
 		this.y = spawn.getY();
 		hitbox.setX(x);
 		hitbox.setY(y);
+	}
+
+	public void setMenuMode(boolean menuMode) {
+		this.menuMode = menuMode;
+		if (menuMode) {
+			this.showHealthUI = false;
+		}
 	}
 	
 	// Attack box of cat
@@ -187,6 +200,9 @@ public class Player extends Entity {
 
 	
 	private void drawUI(GraphicsContext gc) {
+		if (!showHealthUI) {
+			return;
+		}
 		// Retrieve the health display image from the saved resources
     	healthDisplay = LoadSave.GetHealthDisplay(LoadSave.HEARTS_UI, currentHealth);
     	// Draw the health display image on the GraphicsContext at the specified position and size
@@ -287,7 +303,11 @@ public class Player extends Entity {
 	    	state = REVIVE;
 	        
 	    } else {
-	    	state = IDLE;
+			if (menuMode) {
+				state = IDLE;
+			} else {
+				state = IDLE_SIT_TAIL_DOWN;
+			}
 	    }
 
 	    // Reset animation tick and index when transitioning to a different animation state
@@ -509,6 +529,8 @@ public class Player extends Entity {
 	    airSpeed = 0;
 	    walkSpeed = BASE_WALK_SPEED;
 	    running = false;
+		flipX = 0;
+		flipW = 1;
 
 	    hitbox.setX(x);
 	    hitbox.setY(y);

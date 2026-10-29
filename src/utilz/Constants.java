@@ -106,8 +106,8 @@ public class Constants {
 	
 	public static class Menu_UI{
 		//title
-		public static final int T_WIDTH_DEFAULT = 500;
-		public static final int T_HEIGHT_DEFAULT = 60;
+		public static final int T_WIDTH_DEFAULT = 480;
+		public static final int T_HEIGHT_DEFAULT = 192;
 		public static final double T_WIDTH = T_WIDTH_DEFAULT * Game.SCALE;
 		public static final double T_HEIGHT = T_HEIGHT_DEFAULT * Game.SCALE;
 

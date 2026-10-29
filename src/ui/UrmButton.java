@@ -37,7 +37,16 @@ public class UrmButton extends PauseButton {
      * Loads the button images from the sprite atlas.
      */
     private void loadImgs() {
-        Image temp = LoadSave.GetSpriteAtlas(LoadSave.URM_BUTTONS);
+        Image temp = null;
+        if (LoadSave.URM_BUTTONS != null && LoadSave.URM_BUTTONS.equals("urm_buttons.png")) {
+            try {
+                temp = new Image("images/menu/urm_buttons.png");
+            } catch (Exception e) {
+                temp = LoadSave.GetSpriteAtlas(LoadSave.URM_BUTTONS);
+            }
+        } else {
+            temp = LoadSave.GetSpriteAtlas(LoadSave.URM_BUTTONS);
+        }
         imgs = new Image[3];
 
         if (temp == null) {
