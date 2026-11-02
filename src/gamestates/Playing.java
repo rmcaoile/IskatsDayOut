@@ -323,7 +323,7 @@ public class Playing extends State implements Statemethods {
                 case DIGIT9 -> player.setChills(true);
                 case DIGIT0 -> player.setSurprised(true);
                 case EQUALS -> {
-                	if (player.getCurrentHealth() != 9) {
+                	if (!player.isDying() && player.getCurrentHealth() != 9) {
 	                	player.setRevive(true);
 	                	player.setCurrentHealth( player.getCurrentHealth() + 1); 
 	                	}

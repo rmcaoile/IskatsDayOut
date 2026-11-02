@@ -21,12 +21,13 @@ public class Player extends Entity {
     private Image img; 										// The sprite sheet image containing various player animations.
 
     private boolean moving = false, attacking = false; 		// Flags indicating whether the player is moving or attacking.
-    private boolean hurt = false;
     private int hurtTimer = 0;
     private int invulnerableTimer = 0;
     private int hurtDir = 1;
     private boolean left, right, jump, running; 			// Flags representing the player's movement direction.
     private boolean sleeping, licking, eating, scratching, pooping, looking, tricks, spin, chills, surprised, revive;		// Flags representing various player actions.
+	private boolean dying = false;
+	private boolean deathAnimDone = false;
     private int[][] lvlData;
 	
     // Constants for player dimensions and hitbox.
@@ -112,8 +113,18 @@ public class Player extends Entity {
 			invulnerableTimer--;
 		
 		// Update that dictates when is the game over; which is when Cat health is at 0
-		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+		if (currentHealth <= 0 && hurtTimer <= 0 && !inAir) {
+			if (!dying) {
+				dying = true;
+				state = SLEEP2;
+				resetAnitick();
+				return;
+			}
+			// Play death animation once, then trigger game over
+			updateAnimationTick();
+			if (deathAnimDone) {
+				playing.setGameOver(true);
+			}
 			return;
 		}
 
@@ -140,7 +151,6 @@ public class Player extends Entity {
 			updateAnimationTick();
 			state = HURT;
 			if (hurtTimer == 0) {
-				hurt = false;
 				aniIndex = 0;
 				aniTick = 0;
 			}
@@ -233,6 +243,9 @@ public class Player extends Entity {
 				if (menuAnimRandomMode) {
 				    advanceMenuAnimationRandom();
 				} else {
+					if (dying) {
+						deathAnimDone = true;
+					}
 	            aniIndex = 0; 			// Resets the animation index
 	            attacking = false; 		// Resets the attacking flag when the attack animation completes
 	            attackChecked = false;
@@ -262,7 +275,10 @@ public class Player extends Entity {
 	 */
 	private void setAnimation() {
 	    if (menuAnimRandomMode) {
-	        return;
+			return;
+		}
+		if (dying) {
+			return;
 	    }
 	    int startAni = state;
 
@@ -449,7 +465,6 @@ public class Player extends Entity {
 	public void startHurt(int knockbackDir) {
 		if (hurtTimer > 0)
 			return;
-		hurt = true;
 		hurtTimer = 50;
 		invulnerableTimer = 150;
 		hurtDir = knockbackDir;
@@ -462,7 +477,11 @@ public class Player extends Entity {
 	}
 
 	public boolean isInvulnerable() {
-		return invulnerableTimer > 0;
+		return invulnerableTimer > 0 || currentHealth <= 0 || dying;
+	}
+	
+	public boolean isDying() {
+		return dying;
 	}
 	
 	
@@ -534,8 +553,9 @@ public class Player extends Entity {
 	    moving = false;
 	    state = IDLE_SIT_TAIL_DOWN;
 	    currentHealth = maxHealth;
-	    hurt = false;
 	    hurtTimer = 0;
+		dying = false;
+		deathAnimDone = false;
 	    airSpeed = 0;
 	    walkSpeed = BASE_WALK_SPEED;
 	    running = false;
