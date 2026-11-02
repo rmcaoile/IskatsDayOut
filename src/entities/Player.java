@@ -49,6 +49,9 @@ public class Player extends Entity {
 	private int healthDisplayY = (int) (20 * Game.SCALE);
 	private boolean showHealthUI = true;
 	private boolean menuMode = false;
+	private boolean menuAnimRandomMode = false;
+	private int[] menuAnimRandomPool = {SLEEP, EAT, EAT_SIT, LOOK_AROUND, POOP, TRICKS, IDLE_SIT_TAIL_DOWN, IDLE_STAND_TAIL_DOWN, IDLE_STAND_TAIL_UP};
+	private int menuAnimRandomTriggerChance = 30;
 
 	// Attack damage of cat
 	public static int attackDamage = 1;
@@ -227,6 +230,9 @@ public class Player extends Entity {
 
 	        // Checks if the animation index has reached the total number of frames for the current action
 	        if (aniIndex >= GetSpriteAmount(state)) {
+				if (menuAnimRandomMode) {
+				    advanceMenuAnimationRandom();
+				} else {
 	            aniIndex = 0; 			// Resets the animation index
 	            attacking = false; 		// Resets the attacking flag when the attack animation completes
 	            attackChecked = false;
@@ -241,6 +247,7 @@ public class Player extends Entity {
 	            chills = false;
 	            surprised = false;
 	            revive = false;
+				}
 	        }
 	    }
 	}
@@ -254,6 +261,9 @@ public class Player extends Entity {
 	 * to a different animation state.
 	 */
 	private void setAnimation() {
+	    if (menuAnimRandomMode) {
+	        return;
+	    }
 	    int startAni = state;
 
 	 
@@ -603,6 +613,41 @@ public class Player extends Entity {
 
 	public void setRevive(boolean revive) {
 		this.revive = revive;
+	}
+
+	public void setMenuAnimationRandomMode(boolean active) {
+		menuAnimRandomMode = active;
+		if (active) {
+			state = IDLE;
+			resetAnitick();
+		}
+	}
+
+	public void setMenuAnimationRandomPool(int[] pool) {
+		if (pool != null && pool.length > 0) {
+			menuAnimRandomPool = pool;
+		}
+	}
+
+	public void setMenuAnimationRandomTriggerChance(int chance) {
+		if (chance >= 0 && chance <= 100) {
+			menuAnimRandomTriggerChance = chance;
+		}
+	}
+
+	private void advanceMenuAnimationRandom() {
+		if (state == IDLE) {
+			if (Math.random() * 100 < menuAnimRandomTriggerChance) {
+				int pick = (int) (Math.random() * menuAnimRandomPool.length);
+				state = menuAnimRandomPool[pick];
+				resetAnitick();
+			} else {
+				resetAnitick();
+			}
+		} else {
+			state = IDLE;
+			resetAnitick();
+		}
 	}
 
 	public int getCurrentHealth() {

@@ -51,6 +51,7 @@ public class Menu extends State implements Statemethods {
 			player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
 		}
 		player.setMenuMode(true);
+		player.setMenuAnimationRandomMode(true);
 
 		bgImage = new Image("images/background/back.png", Game.GAME_WIDTH, Game.GAME_HEIGHT, false, false);
 		middleImage = new Image("images/background/middle.png");
