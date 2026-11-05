@@ -289,7 +289,7 @@ public class Constants {
 			case LICK2:
 				return 4;
 			case HURT:
-				return 2;
+				return 4;
 			case DEATH_SEPARATE_HEAD:
 				return 12;
 			case DEATH_ROLL_HEAD:

@@ -24,16 +24,19 @@ public class Player extends Entity {
     private int hurtTimer = 0;
     private int invulnerableTimer = 0;
     private int hurtDir = 1;
-    private boolean left, right, jump, running; 			// Flags representing the player's movement direction.
+    private boolean left, right, jumpHeld, running; 		// Flags representing the player's movement direction.
+	private boolean jumpRequested; 							// Fresh jump press
+	private boolean jumpCutApplied; 						// Ensures variable-height cut applies once per jump
+	private int coyoteCounter; 								// Ticks for coyote jump
     private boolean sleeping, licking, eating, scratching, pooping, looking, tricks, spin, chills, surprised, revive;		// Flags representing various player actions.
 	private boolean dying = false;
 	private boolean deathAnimDone = false;
     private int[][] lvlData;
 	
     // Constants for player dimensions and hitbox.
-    private float xDrawOffset = 2*12 * Game.SCALE;		// Hitbox starts with x=16 and y=16	
-	private float yDrawOffset = 2*16 * Game.SCALE;
-	public static int PLAYER_HITBOX_WIDTH = 12;			// Width of the hitbox of Player
+    private float xDrawOffset = 2*15 * Game.SCALE;		// Hitbox starts with x=16 and y=16	
+	private float yDrawOffset = 2*16.5f * Game.SCALE;
+	public static int PLAYER_HITBOX_WIDTH = 10;			// Width of the hitbox of Player
 	public static int PLAYER_HITBOX_HEIGHT = 15;		// Height of the hitbox of Player
 	public static int SPRITE_WIDTH = 32;				// Width of each frame in the sprite sheet
 	public static int SPRITE_HEIGHT = 32;				// Height of each frame in the sprite sheet
@@ -41,6 +44,8 @@ public class Player extends Entity {
 	 // Jumping / Gravity parameters.
 	private float jumpSpeed = -2.25f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+	private static final int COYOTE_TICKS = 20;
+	private static final float JUMP_CUT_MULTIPLIER = 0.45f;
 	
 	// HealthUI
 	private Image healthDisplay;
@@ -108,6 +113,7 @@ public class Player extends Entity {
 	// Updates the player's position, animation, and other properties.
 	public void update() {
 		updateAttackBox();
+		updateCoyoteTime();
 		
 		if (invulnerableTimer > 0)
 			invulnerableTimer--;
@@ -360,9 +366,15 @@ public class Player extends Entity {
         // Indicates whether the player is currently moving
         moving = false;
 
-        // Perform a jump if the 'jump' flag is set
-        if (jump)
-            jump();
+        // Perform a jump and allowed coyote jump
+		if (jumpRequested) {
+			if (!inAir) {
+				performJump();
+			} else if (coyoteCounter > 0) {
+				performJump();
+			}
+			jumpRequested = false;
+		}
 
         // If the player is not in the air and is not moving left or right or is moving both left and right, return
         if (!inAir && ((!left && !right) || (left && right)) && !attacking)
@@ -373,7 +385,7 @@ public class Player extends Entity {
         // Adjust horizontal speed based on movement flags
         if (left) {
             xSpeed -= walkSpeed;
-            flipX = width * 2.25f;
+            flipX = width * 2.5f;
             flipW = -1;
         }
         if (right) {
@@ -393,6 +405,12 @@ public class Player extends Entity {
 
         // If the player is in the air, update the position based on air speed and gravity
         if (inAir) {
+			// Variable jump height, cut upward velocity on early release
+			if (!jumpHeld && !jumpCutApplied && airSpeed < 0) {
+				airSpeed *= JUMP_CUT_MULTIPLIER;
+				jumpCutApplied = true;
+			}
+
             if (CanMoveHere(hitbox.getX(), (hitbox.getY() + airSpeed), hitbox.getWidth(), hitbox.getHeight(), lvlData)) {
                 hitbox.setY(hitbox.getY() + airSpeed);
                 airSpeed += GRAVITY;
@@ -418,14 +436,26 @@ public class Player extends Entity {
 	
 
 	
+	private void performJump() {
+		inAir = true;
+		airSpeed = jumpSpeed;
+		coyoteCounter = 0;
+		jumpCutApplied = false;
+	}
+
+	private void updateCoyoteTime() {
+		if (IsEntityOnFloor(hitbox, lvlData)) {
+			coyoteCounter = COYOTE_TICKS;
+		} else if (coyoteCounter > 0) {
+			coyoteCounter--;
+		}
+	}
+
 	private void jump() {
 		// If the player is already in the air, do nothing
 		if (inAir)
 			return;
-		// Set the in-air flag to true
-	    inAir = true;
-	    // Set the air speed to the predefined jump speed, initiating the jump action
-	    airSpeed = jumpSpeed;
+		performJump();
 	}
 
 	private void resetInAir() {
@@ -559,6 +589,10 @@ public class Player extends Entity {
 	    airSpeed = 0;
 	    walkSpeed = BASE_WALK_SPEED;
 	    running = false;
+		jumpHeld = false;
+		jumpRequested = false;
+		jumpCutApplied = false;
+		coyoteCounter = 0;
 		flipX = 0;
 		flipW = 1;
 
@@ -707,7 +741,9 @@ public class Player extends Entity {
 	}
 	
 	public void setJump(boolean jump) {
-		this.jump = jump;
+		if (jump && !jumpHeld)
+			jumpRequested = true;
+		this.jumpHeld = jump;
 	}
 	
 	
