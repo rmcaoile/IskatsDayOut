@@ -45,7 +45,7 @@ public class LoadSave {
     // Retrieves an array of level images from the "lvls" directory
     public static Image[] GetAllLevels() {
         String path = "images/lvls";
-        int numLevels = 3;
+        int numLevels = 5;
 
         Image[] images = new Image[numLevels];
 

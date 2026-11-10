@@ -44,7 +44,7 @@ public class Player extends Entity {
 	 // Jumping / Gravity parameters.
 	private float jumpSpeed = -2.25f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-	private static final int COYOTE_TICKS = 20;
+	private static final int COYOTE_TICKS = 25;
 	private static final float JUMP_CUT_MULTIPLIER = 0.45f;
 	
 	// HealthUI

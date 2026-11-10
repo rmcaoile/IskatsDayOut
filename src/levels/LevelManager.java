@@ -101,6 +101,16 @@ public class LevelManager {
      * @param lvlOffset The level offset in the x-direction.
      */
     public void draw(GraphicsContext gc, int lvlOffset) {
+        ArrayList<Prop> props = levels.get(lvlIndex).getProps();
+        if (props != null) {
+            for (Prop prop : props) {
+                if (prop.getImage() == null) {
+                    continue;
+                }
+                gc.drawImage(prop.getImage(), prop.getX() - lvlOffset, prop.getY());
+            }
+        }
+
         for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
@@ -117,15 +127,6 @@ public class LevelManager {
                         Game.TILES_SIZE,
                         Game.TILES_SIZE
                 );
-            }
-        }
-        ArrayList<Prop> props = levels.get(lvlIndex).getProps();
-        if (props != null) {
-            for (Prop prop : props) {
-                if (prop.getImage() == null) {
-                    continue;
-                }
-                gc.drawImage(prop.getImage(), prop.getX() - lvlOffset, prop.getY());
             }
         }
     }
