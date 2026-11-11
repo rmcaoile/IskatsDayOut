@@ -304,11 +304,7 @@ public class Playing extends State implements Statemethods {
                     Player.setWalkSpeed(2);
                     player.setRun(true);
                 }
-                case X -> {
-                    player.setAttacking(true);
-                    System.out.println("CAT PUNCH!!");
-                }
-                case C -> {
+                case ENTER -> {
                     player.setAttacking(true);
                     System.out.println("Scratchy scratch!!");
                 }

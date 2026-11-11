@@ -49,8 +49,8 @@ public class Player extends Entity {
 	
 	// HealthUI
 	private Image healthDisplay;
-	private int healthDisplayWidth = (int) (99 * Game.SCALE * 2);		// 99 width
-	private int healthDisplayHeight = (int) (11 * Game.SCALE * 2);		// 11 height
+	private int healthDisplayWidth = (int) (135 * Game.SCALE * 2);		// 135 width
+	private int healthDisplayHeight = (int) (12 * Game.SCALE * 2);		// 12 height
 	private int healthDisplayX = (int) (15 * Game.SCALE);
 	private int healthDisplayY = (int) (20 * Game.SCALE);
 	private boolean showHealthUI = true;
