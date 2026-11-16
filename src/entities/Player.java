@@ -307,7 +307,7 @@ public class Player extends Entity {
 	        	state = FALLING;
 	        
 	    } else if (moving && running) {
-	    	state = RUNNING3;
+	    	state = RUNNING2;
 	    } else if (moving) {
 	    	state = WALKING;
 	        

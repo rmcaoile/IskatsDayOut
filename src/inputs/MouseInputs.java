@@ -31,6 +31,9 @@ public class MouseInputs implements EventHandler<MouseEvent> {
     	case PLAYING:
     		game.getPlaying().mouseMoved(event);
     		break;
+    	case ABOUT:
+    		game.getAbout().mouseMoved(event);
+    		break;
     	default:
     		break;
     	}
@@ -64,6 +67,9 @@ public class MouseInputs implements EventHandler<MouseEvent> {
 	        case PLAYING:
 	        	game.getPlaying().mousePressed(event);
 	            break;
+	        case ABOUT:
+	        	game.getAbout().mousePressed(event);
+	            break;
 	        default:
 	            break;
     	}
@@ -76,6 +82,9 @@ public class MouseInputs implements EventHandler<MouseEvent> {
 	            break;
 	        case PLAYING:
 	        	game.getPlaying().mouseReleased(event);
+	            break;
+	        case ABOUT:
+	        	game.getAbout().mouseReleased(event);
 	            break;
 	        default:
 	            break;

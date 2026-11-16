@@ -26,6 +26,16 @@ public class LoadSave {
     public static final String URM_BUTTONS = "urm_buttons.png";
     public static final String COMPLETED_IMG = "completed_sprite.png";
     public static final String PAUSED_IMG = "paused_sprite.png";
+    public static final String TUTORIAL_IMG = "info/tutorial.png";
+
+    // Keyboard button images
+    public static final String KEY_W = "images/info/W.png";
+    public static final String KEY_A = "images/info/A.png";
+    public static final String KEY_S = "images/info/S.png";
+    public static final String KEY_D = "images/info/D.png";
+    public static final String KEY_SPACE = "images/info/SPACE.png";
+    public static final String KEY_SHIFT = "images/info/SHIFTBIGGER.png";
+    public static final String KEY_ENTER = "images/info/ENTER.png";
 
     
     /* Retrieves a sprite atlas image based on the given file name.

@@ -237,7 +237,7 @@ public class Constants {
 			case RUNNING:
 				return 9;
 			case RUNNING2:
-				return 2;
+				return 5;
 			case RUNNING3:
 				return 3;
 			case SLEEP:
