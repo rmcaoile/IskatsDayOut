@@ -1,46 +1,105 @@
 package ui;
 
-import gamestates.Playing;
 import gamestates.Gamestate;
+import gamestates.Playing;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import main.Game;
+import utilz.Constants;
+import utilz.LoadSave;
+
+import static utilz.Constants.PlayerConstants.TRICKS;
+import static utilz.Constants.UI.URMButtons.URM_SIZE;
 
 public class GameWonOverlay {
 
-    private Playing playing;
+    private static final int CAT_SIZE = (int) (32 * 10);
 
-    // Constructor
+    private Playing playing;
+    private Image gameWonImg;
+    private TutorialCat tricksCat;
+    private UrmButton menuBtn;
+    private int bgX, bgY, bgW, bgH;
+
     public GameWonOverlay(Playing playing) {
         this.playing = playing;
+        initOverlay();
     }
 
-    // Draw method to display the game won overlay
+    private void initOverlay() {
+        gameWonImg = LoadSave.GetSpriteAtlas(LoadSave.GAMEWON_IMG);
+        if (gameWonImg != null) {
+            bgW = (int) gameWonImg.getWidth();
+            bgH = (int) gameWonImg.getHeight();
+            bgX = Game.GAME_WIDTH / 2 - bgW / 2;
+            bgY = Game.GAME_HEIGHT / 2 - bgH / 2 - 15;
+        }
+
+        int catX = Game.GAME_WIDTH / 2 - CAT_SIZE / 2 ;
+        int catY = bgY + 50;
+        tricksCat = new TutorialCat(new int[]{TRICKS}, new int[]{1}, Constants.ANI_SPEED, catX, catY, CAT_SIZE, false);
+
+        int menuBtnX = Game.GAME_WIDTH / 2 - URM_SIZE / 2;
+        int menuBtnY = (int) (Game.GAME_HEIGHT - URM_SIZE - 40 * Game.SCALE);
+        menuBtn = new UrmButton(menuBtnX, menuBtnY, URM_SIZE, URM_SIZE, 2);
+    }
+
+    public void update() {
+        if (tricksCat != null)
+            tricksCat.update();
+        if (menuBtn != null)
+            menuBtn.update();
+    }
+
     public void draw(GraphicsContext gc) {
-        // Draw a semi-transparent black background
-        gc.setFill(new Color(0, 0, 0, 0.8));
+        gc.setImageSmoothing(false);
+
+        gc.setFill(Color.rgb(0, 0, 0, 0.78));
         gc.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
-        // Set text properties
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Arial", 30));
-        gc.setTextAlign(TextAlignment.CENTER);
+        if (gameWonImg != null)
+            gc.drawImage(gameWonImg, bgX, bgY, bgW, bgH);
 
-        // Display game won message and additional information
-        gc.fillText("GAME WON!", Game.GAME_WIDTH / 2, 150);
-        gc.fillText("Hooray!! Iskat reached home safely", Game.GAME_WIDTH / 2, 350);
-        gc.fillText("Kill Count: 8", Game.GAME_WIDTH / 2, 400);
-        gc.fillText("Press ESC to enter Main Menu", Game.GAME_WIDTH / 2, 700);
+        if (tricksCat != null)
+            tricksCat.draw(gc);
+        if (menuBtn != null)
+            menuBtn.draw(gc);
     }
 
-    // Handle key press events, specifically the ESC key to return to the main menu
+    private boolean isIn(UrmButton b, MouseEvent e) {
+        if (b == null) return false;
+        return b.getBounds().contains(playing.getGame().toLogicalX(e.getX()), playing.getGame().toLogicalY(e.getY()));
+    }
+
+    public void mousePressed(MouseEvent event) {
+        if (isIn(menuBtn, event))
+            menuBtn.setMousePressed(true);
+    }
+
+    public void mouseReleased(MouseEvent event) {
+        if (isIn(menuBtn, event) && menuBtn.isMousePressed()) {
+            playing.resetToFirstLevel();
+            playing.resetAll();
+            Gamestate.state = Gamestate.MENU;
+        }
+        if (menuBtn != null)
+            menuBtn.resetBools();
+    }
+
+    public void mouseMoved(MouseEvent event) {
+        if (menuBtn != null)
+            menuBtn.setMouseOver(false);
+        if (isIn(menuBtn, event))
+            menuBtn.setMouseOver(true);
+    }
+
     public void keyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ESCAPE) {
-            // Reset game state and transition to the main menu
+            playing.resetToFirstLevel();
             playing.resetAll();
             Gamestate.state = Gamestate.MENU;
         }

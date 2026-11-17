@@ -138,7 +138,10 @@ public class Playing extends State implements Statemethods {
 	    if (paused) {
 	        pausedOverlay.update();
 	    } else if (lvlCompleted) {
-	        levelCompletedOverlay.update();
+	        if (isGameWon())
+	            gameWonOverlay.update();
+	        else
+	            levelCompletedOverlay.update();
 	    } else if (gameOver) {
 	        gameOverOverlay.update();
 	    } else {
@@ -256,8 +259,12 @@ public class Playing extends State implements Statemethods {
 	public void mousePressed(MouseEvent event) {
 		if (gameOver) { gameOverOverlay.mousePressed(event); return; }
 		if (paused) { pausedOverlay.mousePressed(event); return; }
-		if (lvlCompleted)
-			levelCompletedOverlay.mousePressed(event);
+		if (lvlCompleted) {
+			if (isGameWon())
+				gameWonOverlay.mousePressed(event);
+			else
+				levelCompletedOverlay.mousePressed(event);
+		}
 	}
 
 	public void mouseDragged(MouseEvent event) {
@@ -271,8 +278,12 @@ public class Playing extends State implements Statemethods {
 	public void mouseReleased(MouseEvent event) {
 		if (gameOver) { gameOverOverlay.mouseReleased(event); return; }
 		if (paused) { pausedOverlay.mouseReleased(event); return; }
-		if (lvlCompleted)
-			levelCompletedOverlay.mouseReleased(event);
+		if (lvlCompleted) {
+			if (isGameWon())
+				gameWonOverlay.mouseReleased(event);
+			else
+				levelCompletedOverlay.mouseReleased(event);
+		}
 	}
 
 
@@ -281,8 +292,11 @@ public class Playing extends State implements Statemethods {
 		if (gameOver) { gameOverOverlay.mouseMoved(event); return; }
 		if (paused) { pausedOverlay.mouseMoved(event); return; }
 		if (lvlCompleted) {
-            levelCompletedOverlay.mouseMoved(event);
-        }
+			if (isGameWon())
+				gameWonOverlay.mouseMoved(event);
+			else
+				levelCompletedOverlay.mouseMoved(event);
+		}
 	}
 
 
@@ -295,6 +309,8 @@ public class Playing extends State implements Statemethods {
 			if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
 				paused = false;
 			}
+		} else if (lvlCompleted && isGameWon()) {
+			gameWonOverlay.keyPressed(event);
 		} else {
             switch (event.getCode()) {
                 case A, LEFT -> player.setLeft(true);
@@ -325,17 +341,7 @@ public class Playing extends State implements Statemethods {
 	                	}
                 }
                 case ESCAPE -> {
-                    if (gameOver) {
-                        resetToFirstLevel();
-                        Gamestate.state = Gamestate.MENU;
-                    } else if (lvlCompleted) {
-                        if (levelManager.getLvlIndex() == levelManager.getAmountOfLevels() - 1) {
-                            resetToFirstLevel();
-                            Gamestate.state = Gamestate.MENU;
-                        }
-                    } else {
-                        paused = true;
-                    }
+                    paused = true;
                 }
             }
 	    }
@@ -362,6 +368,10 @@ public class Playing extends State implements Statemethods {
 
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	private boolean isGameWon() {
+		return lvlCompleted && levelManager.getLvlIndex() == levelManager.getAmountOfLevels() - 1;
 	}
 	
 	public void setMaxLvlOffset(int lvlOffset) {
