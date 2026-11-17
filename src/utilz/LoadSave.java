@@ -27,6 +27,7 @@ public class LoadSave {
     public static final String COMPLETED_IMG = "completed_sprite.png";
     public static final String PAUSED_IMG = "paused_sprite.png";
     public static final String TUTORIAL_IMG = "info/tutorial.png";
+    public static final String GAMEOVER_IMG = "gameover/gameover.png";
 
     // Keyboard button images
     public static final String KEY_W = "images/info/W.png";

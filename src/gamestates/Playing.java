@@ -137,11 +137,11 @@ public class Playing extends State implements Statemethods {
 	public void update() {
 	    if (paused) {
 	        pausedOverlay.update();
-	        return;
-	    }
-	    if (lvlCompleted) {
+	    } else if (lvlCompleted) {
 	        levelCompletedOverlay.update();
-	    } else if (!gameOver) {
+	    } else if (gameOver) {
+	        gameOverOverlay.update();
+	    } else {
 	        // If the game is not over, update the level manager, player, and enemy manager
 	        levelManager.update();
 	        player.update();
@@ -254,7 +254,7 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		if (gameOver) return;
+		if (gameOver) { gameOverOverlay.mousePressed(event); return; }
 		if (paused) { pausedOverlay.mousePressed(event); return; }
 		if (lvlCompleted)
 			levelCompletedOverlay.mousePressed(event);
@@ -269,7 +269,7 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
-		if (gameOver) return;
+		if (gameOver) { gameOverOverlay.mouseReleased(event); return; }
 		if (paused) { pausedOverlay.mouseReleased(event); return; }
 		if (lvlCompleted)
 			levelCompletedOverlay.mouseReleased(event);
@@ -278,7 +278,7 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void mouseMoved(MouseEvent event) {
-		if (gameOver) return;
+		if (gameOver) { gameOverOverlay.mouseMoved(event); return; }
 		if (paused) { pausedOverlay.mouseMoved(event); return; }
 		if (lvlCompleted) {
             levelCompletedOverlay.mouseMoved(event);
